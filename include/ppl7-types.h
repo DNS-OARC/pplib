@@ -55,7 +55,6 @@
 
 namespace ppl7 {
 
-class Variant;
 class String;
 class WideString;
 class Array;
@@ -82,7 +81,8 @@ class Variant
 			DATETIME	=11,
 			BYTEARRAYPTR	=12
 		};
-	protected:
+	private:
+		void			*value;
 		ppluint8		type;
 
 	public:
@@ -90,6 +90,8 @@ class Variant
 		//@{
 		Variant();
 		virtual ~Variant() {};
+		void set(const String &value);
+		void set(const WideString &value);
 		int dataType() const;
 		bool isType(int type) const;
 		bool isString() const;
@@ -137,7 +139,7 @@ class Pointer : public Variant
 		Pointer &operator=(const void *ptr);
 };
 
-class ByteArrayPtr : public Variant
+class ByteArrayPtr
 {
 	friend class ByteArray;
 	private:
@@ -226,7 +228,7 @@ std::ostream& operator<<(std::ostream& s, const ByteArray &ba);
 
 ByteArray fromBase64(const String &base64);
 
-class String : public Variant
+class String
 {
 	private:
 		char *ptr;
@@ -242,7 +244,6 @@ class String : public Variant
 		String(const String &str) throw(OutOfMemoryException);
 		String(const WideString *str) throw(OutOfMemoryException);
 		String(const WideString &str) throw(OutOfMemoryException);
-		String(const Variant &var) throw(OutOfMemoryException);
 		String(const std::string &str) throw(OutOfMemoryException, UnsupportedFeatureException, UnsupportedCharacterEncodingException, CharacterEncodingException);
 		String(const std::wstring &str) throw(OutOfMemoryException);
 		~String() throw();
@@ -301,7 +302,6 @@ class String : public Variant
 		String & set(const wchar_t *str, size_t size=(size_t)-1) throw(OutOfMemoryException);
 		String & set(char c) throw(OutOfMemoryException);
 		String & set(size_t position, char c) throw(OutOfBoundsEception);
-		String & set(const Variant &var) throw(OutOfMemoryException);
 		String & setf(const char *fmt, ...);
 
 		String & append(const char *str, size_t size=(size_t)-1) throw(OutOfMemoryException, UnsupportedFeatureException, UnsupportedCharacterEncodingException, CharacterEncodingException);
@@ -420,7 +420,6 @@ class String : public Variant
 		String& operator=(const wchar_t* str);
 		String& operator=(const String *str);
 		String& operator=(const String &str);
-		String& operator=(const Variant &str);
 		String& operator=(const std::string &str);
 		String& operator=(const std::wstring &str);
 		String& operator=(char c);
@@ -486,7 +485,7 @@ String operator+(const String &str1, const std::wstring &str2);
 
 std::ostream& operator<<(std::ostream& s, const String &str);
 
-class WideString : public Variant
+class WideString
 {
 	private:
 		wchar_t *ptr;
@@ -502,7 +501,6 @@ class WideString : public Variant
 		WideString(const WideString &str) throw(OutOfMemoryException);
 		WideString(const String *str) throw(OutOfMemoryException);
 		WideString(const String &str) throw(OutOfMemoryException);
-		WideString(const Variant &var) throw(OutOfMemoryException);
 		WideString(const std::string &str) throw(OutOfMemoryException, UnsupportedFeatureException, UnsupportedCharacterEncodingException, CharacterEncodingException);
 		WideString(const std::wstring &str) throw(OutOfMemoryException);
 		~WideString() throw();
@@ -560,7 +558,6 @@ class WideString : public Variant
 		WideString & set(const std::wstring &str, size_t size=(size_t)-1) throw(OutOfMemoryException);
 		WideString & set(wchar_t c) throw(OutOfMemoryException);
 		WideString & set(size_t position, wchar_t c) throw(OutOfBoundsEception);
-		WideString & set(const Variant &var) throw(OutOfMemoryException);
 		WideString & setf(const char *fmt, ...);
 
 		WideString & append(const char *str, size_t size=(size_t)-1) throw(OutOfMemoryException, UnsupportedFeatureException, UnsupportedCharacterEncodingException, CharacterEncodingException);
@@ -679,7 +676,6 @@ class WideString : public Variant
 		WideString& operator=(const WideString &str);
 		WideString& operator=(const String *str);
 		WideString& operator=(const String &str);
-		WideString& operator=(const Variant &str);
 		WideString& operator=(const std::string &str);
 		WideString& operator=(const std::wstring &str);
 		WideString& operator=(wchar_t c);
@@ -747,7 +743,7 @@ std::ostream& operator<<(std::ostream& s, const WideString &str);
 
 
 
-class Array : public Variant
+class Array
 {
 	private:
 		size_t numElements;
@@ -840,7 +836,7 @@ class Array : public Variant
 
 Array operator+(const Array &a1, const Array& a2);
 
-class AssocArray : public Variant
+class AssocArray
 {
 	private:
 		class ArrayKey : public String
@@ -899,7 +895,6 @@ class AssocArray : public Variant
 
 
 
-
 		//!\name Konstruktoren und Destruktoren
 		//@{
 		AssocArray();
@@ -928,7 +923,6 @@ class AssocArray : public Variant
 		void set(const String &key, const ByteArrayPtr &value);
 		void set(const String &key, const AssocArray &value);
 		void set(const String &key, const Pointer &value);
-		void set(const String &key, const Variant &value);
 		void setf(const String &key, const char *fmt, ...);
 		//@}
 
@@ -1008,7 +1002,7 @@ typedef struct tagTime {
 //! \brief Datentyp für Unix-Time
 typedef ppluint64 ppl_time_t;
 
-class DateTime : public Variant
+class DateTime
 {
 	private:
 		ppluint32 us;

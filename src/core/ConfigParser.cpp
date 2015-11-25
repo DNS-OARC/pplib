@@ -115,6 +115,8 @@ int main(int argc, char **argv) {
 \endcode
  */
 
+#ifdef TODO
+
 ConfigParser::ConfigParser()
 {
 	setSeparator("=");
@@ -658,7 +660,7 @@ void ConfigParser::save(FileObject &file)
 		s=s->next;
 	}
 }
-
+#endif
 
 } // end of namespace ppl7
 

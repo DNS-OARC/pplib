@@ -1187,8 +1187,6 @@ class LogHandler
 		virtual void logMessage(Logger::PRIORITY prio, int level, const String &msg)=0;
 };
 
-
-
 class ConfigParser
 {
 	private:
