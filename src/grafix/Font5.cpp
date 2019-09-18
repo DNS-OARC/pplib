@@ -248,7 +248,7 @@ void FontEngineFont5::deleteFont(FontFile *file)
 
 #ifndef HAVE_X86_ASSEMBLER
 extern "C" {
-void BltGlyph_M8_32 (GLYPH *g)
+int BltGlyph_M8_32 (GLYPH *g)
 {
 	pplint16 width=Peek16(g->data);
 	pplint16 height=Peek16(g->data+2);
@@ -265,6 +265,7 @@ void BltGlyph_M8_32 (GLYPH *g)
 		}
 		t+=pitch;
 	}
+	return 1;
 }
 }
 #endif
